@@ -1,22 +1,26 @@
 
 // ========================================
 // VAL WARTE CUSTOMER LOOKUP PORTAL
-// Supabase Authentication
+// Supabase Authentication & Customer Search
 // ========================================
 
+// SUPABASE CONFIGURATION
 const SUPABASE_URL =
   "https://tjckvjlosntwfzsxuvoa.supabase.co";
 
 const SUPABASE_PUBLISHABLE_KEY =
   "sb_publishable_Wvqed39tSxaRVTvw0iPrVw_vUkO9R0M";
 
-// Initialize Supabase
+// INITIALIZE SUPABASE
 const supabaseClient = window.supabase.createClient(
   SUPABASE_URL,
   SUPABASE_PUBLISHABLE_KEY
 );
 
-// Interface elements
+// ========================================
+// INTERFACE ELEMENTS
+// ========================================
+
 const loginScreen = document.getElementById("login-screen");
 const portalHeader = document.getElementById("portal-header");
 const portalApp = document.getElementById("portal-app");
@@ -25,28 +29,45 @@ const loginForm = document.getElementById("staff-login-form");
 const loginMessage = document.getElementById("login-message");
 const logoutButton = document.getElementById("logout-button");
 
-// Display login messages
+const customerSearchForm =
+  document.getElementById("customer-search-form");
+
+const resultsContainer =
+  document.getElementById("results-container");
+
+const resultCount =
+  document.getElementById("result-count");
+
+const searchButton =
+  document.getElementById("search-button");
+
+// ========================================
+// LOGIN INTERFACE
+// ========================================
+
 function showLoginMessage(message, type = "error") {
   loginMessage.textContent = message;
+
   loginMessage.style.color =
     type === "success" ? "#27AE60" : "#E05252";
 }
 
-// Show authenticated portal
 function showPortal() {
   loginScreen.hidden = true;
   portalHeader.hidden = false;
   portalApp.hidden = false;
 }
 
-// Show login screen
 function showLogin() {
   loginScreen.hidden = false;
   portalHeader.hidden = true;
   portalApp.hidden = true;
 }
 
-// Verify authenticated staff account
+// ========================================
+// STAFF AUTHORIZATION
+// ========================================
+
 async function verifyActiveStaff(user) {
   const { data, error } = await supabaseClient
     .from("staff_accounts")
@@ -55,52 +76,115 @@ async function verifyActiveStaff(user) {
     .eq("status", "Active")
     .maybeSingle();
 
-  if (error) {
-    throw error;
-  }
+  if (error) throw error;
 
   return data;
 }
 
-// Check existing login session
+// ========================================
+// TEMPORARY DATABASE DIAGNOSTIC
+// Runs ONLY after staff authentication
+// ========================================
+
+async function testCustomerAccess() {
+  const { data: sessionData, error: sessionError } =
+    await supabaseClient.auth.getSession();
+
+  const { data: staffAccess, error: staffError } =
+    await supabaseClient.rpc("is_active_staff");
+
+  const { data: customers, error: customerError } =
+    await supabaseClient
+      .from("customers")
+      .select("customer_id, full_name")
+      .limit(10);
+
+  const diagnostic = {
+    loggedIn: !!sessionData?.session,
+    userId: sessionData?.session?.user?.id || null,
+    staffAccess: staffAccess,
+    staffError: staffError?.message || null,
+    customerRecords: customers?.length ?? null,
+    customerError: customerError?.message || null,
+    sessionError: sessionError?.message || null
+  };
+
+  console.log("VAL WARTE DATABASE DIAGNOSTIC:", diagnostic);
+
+  let panel = document.getElementById("database-diagnostic");
+
+  if (!panel) {
+    panel = document.createElement("pre");
+    panel.id = "database-diagnostic";
+    document.body.appendChild(panel);
+  }
+
+  panel.style.cssText = `
+    padding: 15px;
+    margin: 15px;
+    background: #162840;
+    color: white;
+    border: 1px solid #48A9FF;
+    border-radius: 8px;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    font-size: 13px;
+  `;
+
+  panel.textContent =
+    "VAL WARTE DATABASE DIAGNOSTIC\n\n" +
+    JSON.stringify(diagnostic, null, 2);
+
+  return diagnostic;
+}
+
+// ========================================
+// INITIALIZE EXISTING LOGIN SESSION
+// ========================================
+
 async function initializePortal() {
   showLogin();
 
-  const { data, error } =
-    await supabaseClient.auth.getSession();
-
-  if (error) {
-    showLoginMessage("Unable to verify your session.");
-    return;
-  }
-
-  const session = data.session;
-
-  if (!session) {
-    return;
-  }
-
   try {
+    const { data, error } =
+      await supabaseClient.auth.getSession();
+
+    if (error) throw error;
+
+    const session = data.session;
+
+    if (!session) return;
+
     const staff = await verifyActiveStaff(session.user);
 
     if (!staff) {
       await supabaseClient.auth.signOut();
+
       showLoginMessage(
         "Your account is not authorized for portal access."
       );
+
       return;
     }
 
     showPortal();
+
+    // Run diagnostic AFTER authentication
+    await testCustomerAccess();
+
   } catch (error) {
-    console.error("Staff verification error:", error);
+    console.error("Portal initialization error:", error);
+
     showLoginMessage(
-      "Unable to verify staff access. Please try again."
+      "Unable to verify your staff access. Please sign in again."
     );
   }
 }
 
-// Staff login
+// ========================================
+// STAFF LOGIN
+// ========================================
+
 loginForm.addEventListener("submit", async (event) => {
   event.preventDefault();
 
@@ -117,6 +201,7 @@ loginForm.addEventListener("submit", async (event) => {
 
   loginButton.disabled = true;
   loginButton.textContent = "SIGNING IN...";
+
   showLoginMessage("");
 
   try {
@@ -126,9 +211,7 @@ loginForm.addEventListener("submit", async (event) => {
         password
       });
 
-    if (error) {
-      throw error;
-    }
+    if (error) throw error;
 
     const staff = await verifyActiveStaff(data.user);
 
@@ -143,6 +226,9 @@ loginForm.addEventListener("submit", async (event) => {
     }
 
     showPortal();
+
+    // Run diagnostic AFTER successful login
+    await testCustomerAccess();
 
   } catch (error) {
     console.error("Login error:", error);
@@ -159,7 +245,10 @@ loginForm.addEventListener("submit", async (event) => {
   }
 });
 
-// Staff logout
+// ========================================
+// STAFF LOGOUT
+// ========================================
+
 logoutButton.addEventListener("click", async () => {
   logoutButton.disabled = true;
 
@@ -174,65 +263,32 @@ logoutButton.addEventListener("click", async () => {
   }
 
   loginForm.reset();
+
   showLogin();
-  showLoginMessage("You have successfully signed out.", "success");
+
+  showLoginMessage(
+    "You have successfully signed out.",
+    "success"
+  );
+
+  const diagnostic =
+    document.getElementById("database-diagnostic");
+
+  if (diagnostic) diagnostic.remove();
 });
-// TEMPORARY DATABASE CONNECTION TEST
-async function testCustomerAccess() {
-  const { data: sessionData } =
-    await supabaseClient.auth.getSession();
-
-  const { data: staffAccess, error: staffError } =
-    await supabaseClient.rpc("is_active_staff");
-
-  const { data: customers, error: customerError } =
-    await supabaseClient
-      .from("customers")
-      .select("customer_id, full_name")
-      .limit(10);
-
-  const result = document.createElement("div");
-
-  result.style.cssText =
-    "padding:15px;margin:15px;background:#162840;color:white;border:1px solid #48A9FF;border-radius:8px;";
-
-  result.textContent = JSON.stringify({
-    loggedIn: !!sessionData.session,
-    userId: sessionData.session?.user?.id,
-    staffAccess: staffAccess,
-    staffError: staffError?.message,
-    customerRecords: customers?.length,
-    customerError: customerError?.message
-  }, null, 2);
-
-  document.body.appendChild(result);
-}
-// Start portal
-initializePortal();
-testCustomerAccess();
 
 // ========================================
-// CUSTOMER ACCOUNT SEARCH ENGINE
+// SEARCH HELPER FUNCTIONS
 // ========================================
 
-const customerSearchForm =
-  document.getElementById("customer-search-form");
-
-const resultsContainer =
-  document.getElementById("results-container");
-
-const resultCount =
-  document.getElementById("result-count");
-
-const searchButton =
-  document.getElementById("search-button");
-
-// Safely create HTML elements using text content
 function createElement(tag, className, content) {
   const element = document.createElement(tag);
 
   if (className) element.className = className;
-  if (content !== undefined) element.textContent = content;
+
+  if (content !== undefined) {
+    element.textContent = content;
+  }
 
   return element;
 }
@@ -257,13 +313,13 @@ function formatDate(date) {
 function showSearchMessage(message, type = "normal") {
   resultsContainer.replaceChildren();
 
-  const messageElement = createElement(
-    "div",
-    `search-message ${type}`,
-    message
+  resultsContainer.appendChild(
+    createElement(
+      "div",
+      `search-message ${type}`,
+      message
+    )
   );
-
-  resultsContainer.appendChild(messageElement);
 }
 
 function addDetail(container, label, value) {
@@ -274,17 +330,25 @@ function addDetail(container, label, value) {
   );
 
   detail.appendChild(
-    createElement("span", "detail-value", value || "Not available")
+    createElement(
+      "span",
+      "detail-value",
+      value || "Not available"
+    )
   );
 
   container.appendChild(detail);
 }
 
-// Render customer profiles and their order histories
+// ========================================
+// CUSTOMER PROFILE & ORDER RENDERING
+// ========================================
+
 function renderCustomers(customers, orders, items) {
   resultsContainer.replaceChildren();
 
-  resultCount.textContent = `${customers.length} Customer${customers.length === 1 ? "" : "s"}`;
+  resultCount.textContent =
+    `${customers.length} Customer${customers.length === 1 ? "" : "s"}`;
 
   customers.forEach(customer => {
     const customerCard = createElement(
@@ -298,11 +362,19 @@ function renderCustomers(customers, orders, items) {
     );
 
     customerHeader.appendChild(
-      createElement("h3", "customer-name", customer.full_name)
+      createElement(
+        "h3",
+        "customer-name",
+        customer.full_name
+      )
     );
 
     customerHeader.appendChild(
-      createElement("span", "customer-id-badge", customer.customer_id)
+      createElement(
+        "span",
+        "customer-id-badge",
+        customer.customer_id
+      )
     );
 
     customerCard.appendChild(customerHeader);
@@ -319,40 +391,42 @@ function renderCustomers(customers, orders, items) {
 
     customerCard.appendChild(profileGrid);
 
-    // Customer order history
     const customerOrders = orders.filter(
       order => order.customer_id === customer.customer_id
     );
 
-    const orderHeading = createElement(
-      "h4",
-      "order-history-heading",
-      `ORDER HISTORY (${customerOrders.length})`
+    customerCard.appendChild(
+      createElement(
+        "h4",
+        "order-history-heading",
+        `ORDER HISTORY (${customerOrders.length})`
+      )
     );
-
-    customerCard.appendChild(orderHeading);
 
     if (customerOrders.length === 0) {
       customerCard.appendChild(
-        createElement("p", "empty-orders", "No order history available.")
+        createElement(
+          "p",
+          "empty-orders",
+          "No order history available."
+        )
       );
     }
 
     customerOrders.forEach(order => {
       const orderCard = createElement("div", "order-card");
 
-      const orderTop = createElement("div", "order-card-header");
+      const orderTop = createElement(
+        "div",
+        "order-card-header"
+      );
 
       orderTop.appendChild(
         createElement("strong", "order-id", order.order_id)
       );
 
       orderTop.appendChild(
-        createElement(
-          "span",
-          "order-status",
-          order.order_status
-        )
+        createElement("span", "order-status", order.order_status)
       );
 
       orderCard.appendChild(orderTop);
@@ -372,18 +446,17 @@ function renderCustomers(customers, orders, items) {
 
       orderCard.appendChild(orderDetails);
 
-      // Products purchased in this order
       const orderItems = items.filter(
         item => item.order_id === order.order_id
       );
 
-      const itemHeading = createElement(
-        "p",
-        "order-items-heading",
-        "PURCHASED ITEMS"
+      orderCard.appendChild(
+        createElement(
+          "p",
+          "order-items-heading",
+          "PURCHASED ITEMS"
+        )
       );
-
-      orderCard.appendChild(itemHeading);
 
       orderItems.forEach(item => {
         const itemRow = createElement("div", "order-item");
@@ -414,7 +487,10 @@ function renderCustomers(customers, orders, items) {
   });
 }
 
-// Execute customer search
+// ========================================
+// CUSTOMER ACCOUNT SEARCH ENGINE
+// ========================================
+
 customerSearchForm.addEventListener("submit", async event => {
   event.preventDefault();
 
@@ -450,25 +526,47 @@ customerSearchForm.addEventListener("submit", async event => {
 
   searchButton.disabled = true;
   searchButton.textContent = "SEARCHING...";
+
   resultCount.textContent = "Searching...";
 
-  showSearchMessage("Searching customer records...", "loading");
+  showSearchMessage(
+    "Searching customer records...",
+    "loading"
+  );
 
   try {
+    // Confirm active session before searching
+    const { data: sessionData, error: sessionError } =
+      await supabaseClient.auth.getSession();
+
+    if (sessionError) throw sessionError;
+
+    if (!sessionData.session) {
+      throw new Error(
+        "Your session has expired. Please sign in again."
+      );
+    }
+
     let matchingOrderCustomerIds = null;
 
-    // Exact order ID and tracking number searches
+    // SEARCH BY ORDER ID OR TRACKING NUMBER
     if (hasOrderCriteria) {
       let orderQuery = supabaseClient
         .from("orders")
         .select("customer_id");
 
       if (search.orderId) {
-        orderQuery = orderQuery.eq("order_id", search.orderId);
+        orderQuery = orderQuery.eq(
+          "order_id",
+          search.orderId
+        );
       }
 
       if (search.tracking) {
-        orderQuery = orderQuery.eq("tracking_number", search.tracking);
+        orderQuery = orderQuery.eq(
+          "tracking_number",
+          search.tracking
+        );
       }
 
       const { data: matchingOrders, error: orderError } =
@@ -477,20 +575,26 @@ customerSearchForm.addEventListener("submit", async event => {
       if (orderError) throw orderError;
 
       matchingOrderCustomerIds = [
-        ...new Set(matchingOrders.map(order => order.customer_id))
+        ...new Set(
+          (matchingOrders || []).map(
+            order => order.customer_id
+          )
+        )
       ];
 
       if (matchingOrderCustomerIds.length === 0) {
         resultCount.textContent = "0 Customers";
+
         showSearchMessage(
           "No customer records found matching your search.",
           "empty"
         );
+
         return;
       }
     }
 
-    // Customer profile search
+    // SEARCH CUSTOMER PROFILE
     let customerQuery = supabaseClient
       .from("customers")
       .select("*");
@@ -553,11 +657,11 @@ customerSearchForm.addEventListener("submit", async event => {
       return;
     }
 
+    // RETRIEVE ALL ORDERS FOR MATCHING CUSTOMERS
     const customerIds = customers.map(
       customer => customer.customer_id
     );
 
-    // Retrieve all orders belonging to matched customers
     const { data: orders, error: ordersError } =
       await supabaseClient
         .from("orders")
@@ -567,9 +671,11 @@ customerSearchForm.addEventListener("submit", async event => {
 
     if (ordersError) throw ordersError;
 
-    const orderIds = orders.map(order => order.order_id);
+    const orderIds = (orders || []).map(
+      order => order.order_id
+    );
 
-    // Retrieve purchased products
+    // RETRIEVE PURCHASED ITEMS
     let items = [];
 
     if (orderIds.length > 0) {
@@ -584,7 +690,11 @@ customerSearchForm.addEventListener("submit", async event => {
       items = orderItems || [];
     }
 
-    renderCustomers(customers, orders, items);
+    renderCustomers(
+      customers,
+      orders || [],
+      items
+    );
 
   } catch (error) {
     console.error("Customer search error:", error);
@@ -592,7 +702,7 @@ customerSearchForm.addEventListener("submit", async event => {
     resultCount.textContent = "Search Error";
 
     showSearchMessage(
-      "Unable to retrieve customer records. Please try again.",
+      error.message || "Unable to retrieve customer records.",
       "error"
     );
 
@@ -602,7 +712,10 @@ customerSearchForm.addEventListener("submit", async event => {
   }
 });
 
-// Clear search results when the form is reset
+// ========================================
+// CLEAR SEARCH
+// ========================================
+
 customerSearchForm.addEventListener("reset", () => {
   resultCount.textContent = "0 Records";
 
@@ -610,3 +723,9 @@ customerSearchForm.addEventListener("reset", () => {
     "Enter a customer detail above to search for an account."
   );
 });
+
+// ========================================
+// START PORTAL
+// ========================================
+
+initializePortal();
