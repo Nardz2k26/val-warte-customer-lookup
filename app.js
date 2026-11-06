@@ -177,10 +177,23 @@ logoutButton.addEventListener("click", async () => {
   showLogin();
   showLoginMessage("You have successfully signed out.", "success");
 });
+// TEMPORARY DATABASE CONNECTION TEST
+async function testCustomerAccess() {
+  const { data, error } = await supabaseClient
+    .from("customers")
+    .select("customer_id, full_name")
+    .limit(10);
 
+  console.log("CUSTOMER ACCESS TEST:", {
+    authenticated: !!(await supabaseClient.auth.getSession()).data.session,
+    recordsReturned: data?.length,
+    records: data,
+    error: error
+  });
+}
 // Start portal
 initializePortal();
-
+testCustomerAccess();
 
 // ========================================
 // CUSTOMER ACCOUNT SEARCH ENGINE
