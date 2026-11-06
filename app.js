@@ -184,12 +184,16 @@ async function testCustomerAccess() {
     .select("customer_id, full_name")
     .limit(10);
 
-  console.log("CUSTOMER ACCESS TEST:", {
-    authenticated: !!(await supabaseClient.auth.getSession()).data.session,
-    recordsReturned: data?.length,
-    records: data,
-    error: error
-  });
+  const result = document.createElement("div");
+
+result.style.cssText =
+  "padding:15px;margin:15px;background:#162840;color:white;border:1px solid #48A9FF;border-radius:8px;";
+
+result.textContent = error
+  ? "DATABASE TEST ERROR: " + error.message
+  : "DATABASE TEST SUCCESS: " + data.length + " customer records retrieved.";
+
+document.body.appendChild(result);
 }
 // Start portal
 initializePortal();
