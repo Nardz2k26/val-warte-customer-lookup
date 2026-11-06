@@ -4,43 +4,149 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#202020">
-  <title>VAL WARTE | Customer Lookup</title>
+  <meta name="theme-color" content="#080808">
+
+  <title>VAL WARTE | Account Manager</title>
+
   <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
 
-  <header>
-    <div class="brand">VW</div>
-    <div>VAL WARTE</div>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark">VW</span>
+      <span class="brand-name">VAL WARTE</span>
+    </div>
+
+    <span class="demo-badge">Demo Interface</span>
   </header>
 
-  <main>
-    <h1>Customer Account Lookup</h1>
-    <p class="subtitle">
-      Internal Customer Service Portal
-    </p>
+  <main class="container">
 
-    <section class="panel">
-      <h3>Search customer accounts</h3>
-      <input
-        type="search"
-        placeholder="Search by name, email, order ID or tracking number..."
-      >
-      <p>Search functionality coming next.</p>
+    <section class="page-heading">
+      <h1>ACCOUNT MANAGER</h1>
+      <p>CUSTOMER SEARCH PORTAL</p>
     </section>
 
-    <section class="stats">
-      <div class="stat-card">
-        <span>Total Customers</span>
-        <strong>10</strong>
+    <section class="search-panel">
+
+      <form id="customer-search-form">
+
+        <div class="field full-width">
+          <label for="order-id">Order ID</label>
+          <input
+            type="text"
+            id="order-id"
+            name="order_id"
+            placeholder="Enter order ID"
+            autocomplete="off"
+          >
+        </div>
+
+        <div class="field full-width">
+          <label for="tracking-number">Tracking Number</label>
+          <input
+            type="text"
+            id="tracking-number"
+            name="tracking_number"
+            placeholder="Enter tracking number"
+            autocomplete="off"
+          >
+        </div>
+
+        <div class="field-grid">
+
+          <div class="field">
+            <label for="full-name">Full Name</label>
+            <input
+              type="text"
+              id="full-name"
+              name="full_name"
+              placeholder="Customer name"
+              autocomplete="off"
+            >
+          </div>
+
+          <div class="field">
+            <label for="customer-id">CMID</label>
+            <input
+              type="text"
+              id="customer-id"
+              name="customer_id"
+              placeholder="Customer ID"
+              autocomplete="off"
+            >
+          </div>
+
+          <div class="field">
+            <label for="phone">Phone Number</label>
+            <input
+              type="tel"
+              id="phone"
+              name="phone"
+              placeholder="Phone number"
+              autocomplete="off"
+            >
+          </div>
+
+          <div class="field">
+            <label for="email">Email Address</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="Email address"
+              autocomplete="off"
+            >
+          </div>
+
+        </div>
+
+        <div class="field full-width">
+          <label for="mailing-address">Mailing Address</label>
+          <input
+            type="text"
+            id="mailing-address"
+            name="mailing_address"
+            placeholder="Customer mailing address"
+            autocomplete="off"
+          >
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" id="search-button">
+            Search Accounts
+          </button>
+
+          <button type="reset" id="clear-button">
+            Clear
+          </button>
+        </div>
+
+      </form>
+
+    </section>
+
+    <section class="results-section" aria-live="polite">
+
+      <div class="results-heading">
+        <h2>SEARCH RESULTS</h2>
+        <span id="result-count">0 Records</span>
       </div>
 
-      <div class="stat-card">
-        <span>Total Orders</span>
-        <strong>40</strong>
+      <div id="results-container" class="results-placeholder">
+        Enter a customer detail above to search for an account.
       </div>
+
     </section>
+
+    <footer class="footer">
+      <span>VAL WARTE</span>
+      <span>Internal Customer Service Portal</span>
+      <span>Demo Environment · Synthetic Data Only</span>
+    </footer>
+
   </main>
 
 </body>
