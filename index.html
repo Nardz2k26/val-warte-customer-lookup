@@ -4,25 +4,90 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#080808">
+  <meta name="theme-color" content="#08111F">
 
   <title>VAL WARTE | Account Manager</title>
 
-  <link rel="stylesheet" href="styles.css?v=2">
+  <link rel="stylesheet" href="styles.css?v=3">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="app.js" defer></script>
 </head>
 
 <body>
 
-  <header class="topbar">
+  <!-- STAFF LOGIN SCREEN -->
+  <main id="login-screen" class="container">
+    <section class="page-heading">
+      <h1>VAL WARTE</h1>
+      <p>STAFF ACCESS PORTAL</p>
+    </section>
+
+    <section class="search-panel">
+      <form id="staff-login-form">
+
+        <div class="field">
+          <label for="staff-email">Staff Email Address</label>
+          <input
+            type="email"
+            id="staff-email"
+            placeholder="Enter your staff email"
+            autocomplete="username"
+            required
+          >
+        </div>
+
+        <div class="field">
+          <label for="staff-password">Password</label>
+          <input
+            type="password"
+            id="staff-password"
+            placeholder="Enter your password"
+            autocomplete="current-password"
+            required
+          >
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" id="login-button">
+            SIGN IN
+          </button>
+        </div>
+
+        <p id="login-message" role="status" aria-live="polite"></p>
+
+      </form>
+    </section>
+
+    <footer class="footer">
+      <span>VAL WARTE</span>
+      <span>Authorized Staff Only</span>
+      <span>Secure Demo Environment</span>
+    </footer>
+  </main>
+
+
+  <!-- AUTHENTICATED PORTAL HEADER -->
+  <header id="portal-header" class="topbar" hidden>
+
     <div class="brand">
       <span class="brand-mark">VW</span>
       <span class="brand-name">VAL WARTE</span>
     </div>
 
-    <span class="demo-badge">Demo Interface</span>
+    <div class="form-actions">
+      <span class="demo-badge">Demo Interface</span>
+
+      <button type="button" id="logout-button">
+        LOG OUT
+      </button>
+    </div>
+
   </header>
 
-  <main class="container">
+
+  <!-- CUSTOMER ACCOUNT MANAGER -->
+  <main id="portal-app" class="container" hidden>
 
     <section class="page-heading">
       <h1>ACCOUNT MANAGER</h1>
@@ -125,9 +190,9 @@
         </div>
 
       </form>
-
     </section>
 
+    <!-- SEARCH RESULTS -->
     <section class="results-section" aria-live="polite">
 
       <div class="results-heading">
