@@ -179,21 +179,33 @@ logoutButton.addEventListener("click", async () => {
 });
 // TEMPORARY DATABASE CONNECTION TEST
 async function testCustomerAccess() {
-  const { data, error } = await supabaseClient
-    .from("customers")
-    .select("customer_id, full_name")
-    .limit(10);
+  const { data: sessionData } =
+    await supabaseClient.auth.getSession();
+
+  const { data: staffAccess, error: staffError } =
+    await supabaseClient.rpc("is_active_staff");
+
+  const { data: customers, error: customerError } =
+    await supabaseClient
+      .from("customers")
+      .select("customer_id, full_name")
+      .limit(10);
 
   const result = document.createElement("div");
 
-result.style.cssText =
-  "padding:15px;margin:15px;background:#162840;color:white;border:1px solid #48A9FF;border-radius:8px;";
+  result.style.cssText =
+    "padding:15px;margin:15px;background:#162840;color:white;border:1px solid #48A9FF;border-radius:8px;";
 
-result.textContent = error
-  ? "DATABASE TEST ERROR: " + error.message
-  : "DATABASE TEST SUCCESS: " + data.length + " customer records retrieved.";
+  result.textContent = JSON.stringify({
+    loggedIn: !!sessionData.session,
+    userId: sessionData.session?.user?.id,
+    staffAccess: staffAccess,
+    staffError: staffError?.message,
+    customerRecords: customers?.length,
+    customerError: customerError?.message
+  }, null, 2);
 
-document.body.appendChild(result);
+  document.body.appendChild(result);
 }
 // Start portal
 initializePortal();
