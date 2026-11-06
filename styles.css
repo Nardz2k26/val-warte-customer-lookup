@@ -1,113 +1,332 @@
 
+/* =================================
+   VAL WARTE — ACCOUNT MANAGER
+   Dark Customer Search Portal
+================================= */
+
 :root {
-  --burgundy: #641E2B;
-  --burgundy-dark: #42131D;
-  --ivory: #F5F3EF;
-  --champagne: #C8A977;
-  --charcoal: #202020;
-  --muted: #77736E;
-  --white: #FFFFFF;
-  --border: #E5E0D8;
+  --background: #080808;
+  --surface: #101010;
+  --surface-hover: #181818;
+  --border: #292929;
+  --border-light: #383838;
+  --text: #F5F5F5;
+  --muted: #A3A3A3;
+  --green: #27AE60;
+  --green-bg: #062817;
+  --accent: #A78358;
+  --danger: #D9534F;
 }
 
 * {
   box-sizing: border-box;
 }
 
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: var(--ivory);
-  color: var(--charcoal);
+html {
+  scroll-behavior: smooth;
 }
 
-header {
-  background: var(--charcoal);
-  color: var(--white);
-  padding: 24px;
-  border-bottom: 3px solid var(--champagne);
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--background);
+  color: var(--text);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* HEADER */
+
+.topbar {
+  max-width: 1200px;
+  margin: 18px auto 0;
+  padding: 22px 30px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: #050505;
 }
 
 .brand {
-  color: var(--champagne);
-  font-size: 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-mark {
+  font-size: 25px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: var(--accent);
+}
+
+.brand-name {
+  font-size: 15px;
   font-weight: 700;
   letter-spacing: 3px;
 }
 
-main {
-  max-width: 1100px;
-  margin: 35px auto;
-  padding: 0 20px;
-}
-
-h1 {
-  font-size: 28px;
-  margin-bottom: 8px;
-}
-
-.subtitle {
-  color: var(--muted);
-  margin-bottom: 28px;
-}
-
-.panel {
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 22px;
-  margin-bottom: 20px;
-}
-
-input, button {
-  font: inherit;
-  border-radius: 8px;
-  padding: 13px 15px;
-}
-
-input {
-  width: 100%;
-  border: 1px solid var(--border);
-  outline-color: var(--burgundy);
-}
-
-button {
-  border: none;
-  background: var(--burgundy);
-  color: var(--white);
-  cursor: pointer;
+.demo-badge {
+  padding: 10px 18px;
+  border-radius: 30px;
+  background: var(--green-bg);
+  color: var(--green);
+  font-size: 14px;
   font-weight: 600;
 }
 
-button:hover {
-  background: var(--burgundy-dark);
+/* MAIN LAYOUT */
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 30px;
 }
 
-.stats {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 15px;
+/* PAGE HEADING */
+
+.page-heading {
+  margin-bottom: 35px;
 }
 
-.stat-card {
-  background: var(--white);
-  padding: 20px;
+.page-heading h1 {
+  margin: 0;
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.page-heading p {
+  margin: 25px 0 0;
+  color: var(--muted);
+  font-size: 20px;
+  letter-spacing: 1px;
+}
+
+/* SEARCH PANEL */
+
+.search-panel {
+  padding: 28px;
+  background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: 16px;
 }
 
-.stat-card strong {
-  display: block;
-  font-size: 28px;
-  margin-top: 8px;
+#customer-search-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
-@media (max-width: 600px) {
-  main {
-    margin-top: 22px;
+/* FORM FIELDS */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  min-width: 0;
+}
+
+.field label {
+  color: #E5E5E5;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.field input {
+  width: 100%;
+  min-height: 56px;
+  padding: 14px 16px;
+  background: #080808;
+  color: var(--text);
+  border: 1px solid var(--border-light);
+  border-radius: 10px;
+  outline: none;
+  font-size: 16px;
+  transition: border-color 0.2s ease,
+              box-shadow 0.2s ease;
+}
+
+.field input::placeholder {
+  color: #777777;
+}
+
+.field input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(167, 131, 88, 0.15);
+}
+
+/* TWO-COLUMN GRID */
+
+.field-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+/* FORM BUTTONS */
+
+.form-actions {
+  display: flex;
+  align-items: stretch;
+  gap: 14px;
+  margin-top: 4px;
+}
+
+.form-actions button {
+  min-height: 58px;
+  padding: 14px 24px;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s ease,
+              border-color 0.2s ease;
+}
+
+#search-button {
+  flex: 1;
+  background: #262626;
+  border: 1px solid #353535;
+  color: #FFFFFF;
+}
+
+#search-button:hover {
+  background: #373737;
+}
+
+#clear-button {
+  background: transparent;
+  border: 1px solid var(--border-light);
+  color: #FFFFFF;
+}
+
+#clear-button:hover {
+  background: var(--surface-hover);
+}
+
+/* SEARCH RESULTS */
+
+.results-section {
+  margin-top: 32px;
+  padding: 25px 0;
+  border-top: 1px solid var(--border);
+}
+
+.results-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.results-heading h2 {
+  margin: 0;
+  font-size: 18px;
+  letter-spacing: 1px;
+}
+
+#result-count {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.results-placeholder {
+  padding: 35px 20px;
+  border: 1px dashed var(--border-light);
+  border-radius: 10px;
+  color: var(--muted);
+  text-align: center;
+  font-size: 14px;
+}
+
+/* FOOTER */
+
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 24px 0;
+  margin-top: 25px;
+  border-top: 1px solid var(--border);
+  color: #777777;
+  font-size: 12px;
+}
+
+/* MOBILE RESPONSIVENESS */
+
+@media (max-width: 650px) {
+
+  .topbar {
+    margin: 10px;
+    padding: 17px;
+    border-radius: 12px;
   }
 
-  .stats {
+  .brand-mark {
+    font-size: 21px;
+  }
+
+  .brand-name {
+    font-size: 12px;
+    letter-spacing: 2px;
+  }
+
+  .demo-badge {
+    padding: 8px 11px;
+    font-size: 11px;
+  }
+
+  .container {
+    padding: 20px 15px;
+  }
+
+  .page-heading h1 {
+    font-size: 26px;
+  }
+
+  .page-heading p {
+    font-size: 15px;
+    margin-top: 17px;
+  }
+
+  .search-panel {
+    padding: 18px;
+  }
+
+  .field-grid {
     grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .field input {
+    min-height: 52px;
+    font-size: 15px;
+  }
+
+  .form-actions {
+    gap: 9px;
+  }
+
+  .form-actions button {
+    min-height: 53px;
+    padding: 12px;
+    font-size: 14px;
+  }
+
+  .results-heading h2 {
+    font-size: 15px;
+  }
+
+  .footer {
+    flex-direction: column;
+    font-size: 11px;
   }
 }
