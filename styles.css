@@ -1,0 +1,113 @@
+
+:root {
+  --burgundy: #641E2B;
+  --burgundy-dark: #42131D;
+  --ivory: #F5F3EF;
+  --champagne: #C8A977;
+  --charcoal: #202020;
+  --muted: #77736E;
+  --white: #FFFFFF;
+  --border: #E5E0D8;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: var(--ivory);
+  color: var(--charcoal);
+}
+
+header {
+  background: var(--charcoal);
+  color: var(--white);
+  padding: 24px;
+  border-bottom: 3px solid var(--champagne);
+}
+
+.brand {
+  color: var(--champagne);
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 3px;
+}
+
+main {
+  max-width: 1100px;
+  margin: 35px auto;
+  padding: 0 20px;
+}
+
+h1 {
+  font-size: 28px;
+  margin-bottom: 8px;
+}
+
+.subtitle {
+  color: var(--muted);
+  margin-bottom: 28px;
+}
+
+.panel {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 22px;
+  margin-bottom: 20px;
+}
+
+input, button {
+  font: inherit;
+  border-radius: 8px;
+  padding: 13px 15px;
+}
+
+input {
+  width: 100%;
+  border: 1px solid var(--border);
+  outline-color: var(--burgundy);
+}
+
+button {
+  border: none;
+  background: var(--burgundy);
+  color: var(--white);
+  cursor: pointer;
+  font-weight: 600;
+}
+
+button:hover {
+  background: var(--burgundy-dark);
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+}
+
+.stat-card {
+  background: var(--white);
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.stat-card strong {
+  display: block;
+  font-size: 28px;
+  margin-top: 8px;
+}
+
+@media (max-width: 600px) {
+  main {
+    margin-top: 22px;
+  }
+
+  .stats {
+    grid-template-columns: 1fr;
+  }
+}
