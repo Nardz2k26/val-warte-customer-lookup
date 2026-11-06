@@ -1,24 +1,26 @@
 
-/* =================================
-   VAL WARTE — ACCOUNT MANAGER
-   Dark Customer Search Portal
-================================= */
-
 :root {
   --background: #08111F;
   --surface: #101E30;
   --surface-hover: #162840;
+  --input-background: #0B1726;
   --border: #263B54;
   --border-light: #30445D;
   --text: #FFFFFF;
   --muted: #91A4BA;
-  --green: #238BEA;
-  --green-bg: #102D4A;
-  --accent: #48A9FF;
+  --blue: #238BEA;
+  --blue-light: #48A9FF;
+  --blue-hover: #1678CF;
+  --success: #27AE60;
+  --success-bg: #102D4A;
   --danger: #E05252;
 }
 
+/* GENERAL RESET */
+
 * {
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
 }
 
@@ -27,25 +29,25 @@ html {
 }
 
 body {
-  margin: 0;
   min-height: 100vh;
   background: var(--background);
   color: var(--text);
   font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
 }
 
-/* HEADER */
+/* TOP NAVIGATION */
 
 .topbar {
-  max-width: 1200px;
-  margin: 18px auto 0;
-  padding: 22px 30px;
+  width: 100%;
+  min-height: 68px;
+  padding: 14px 6%;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border: 1px solid var(--border);
-  border-radius: 18px;
-  background: #050505;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
 }
 
 .brand {
@@ -55,33 +57,46 @@ body {
 }
 
 .brand-mark {
-  font-size: 25px;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #13243A;
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  color: var(--blue-light);
+  font-size: 15px;
   font-weight: 800;
-  letter-spacing: 2px;
-  color: var(--accent);
+  letter-spacing: 1px;
 }
 
 .brand-name {
-  font-size: 15px;
+  color: var(--text);
+  font-size: 14px;
   font-weight: 700;
-  letter-spacing: 3px;
+  letter-spacing: 2px;
 }
 
 .demo-badge {
-  padding: 10px 18px;
-  border-radius: 30px;
-  background: var(--green-bg);
-  color: var(--green);
-  font-size: 14px;
-  font-weight: 600;
+  padding: 5px 11px;
+  border: 1px solid rgba(39, 174, 96, 0.35);
+  border-radius: 20px;
+  background: rgba(39, 174, 96, 0.10);
+  color: #54D68B;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
 }
 
-/* MAIN LAYOUT */
+/* MAIN CONTAINER */
 
 .container {
-  max-width: 1200px;
+  width: 100%;
+  max-width: 1050px;
   margin: 0 auto;
-  padding: 30px;
+  padding: 65px 30px 35px;
 }
 
 /* PAGE HEADING */
@@ -91,32 +106,34 @@ body {
 }
 
 .page-heading h1 {
-  margin: 0;
-  font-size: 34px;
-  font-weight: 700;
-  letter-spacing: 1px;
+  color: var(--text);
+  font-size: clamp(30px, 5vw, 44px);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: 1.5px;
 }
 
 .page-heading p {
-  margin: 25px 0 0;
-  color: var(--muted);
-  font-size: 20px;
-  letter-spacing: 1px;
+  margin-top: 9px;
+  color: var(--blue-light);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 3px;
 }
 
 /* SEARCH PANEL */
 
 .search-panel {
-  padding: 28px;
+  padding: 30px;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 16px;
+  border-radius: 10px;
 }
 
 #customer-search-form {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 22px;
 }
 
 /* FORM FIELDS */
@@ -124,45 +141,56 @@ body {
 .field {
   display: flex;
   flex-direction: column;
-  gap: 9px;
+  gap: 8px;
   min-width: 0;
 }
 
 .field label {
-  color: #E5E5E5;
-  font-size: 16px;
-  font-weight: 600;
+  color: #B7C7DA;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
 }
 
 .field input {
   width: 100%;
-  min-height: 56px;
-  padding: 14px 16px;
-  background: #080808;
-  color: var(--text);
-  border: 1px solid var(--border-light);
-  border-radius: 10px;
+  min-height: 46px;
+  padding: 12px 14px;
   outline: none;
-  font-size: 16px;
-  transition: border-color 0.2s ease,
-              box-shadow 0.2s ease;
+  background: var(--input-background);
+  border: 1px solid var(--border-light);
+  border-radius: 6px;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 13px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .field input::placeholder {
-  color: #777777;
+  color: #71849B;
+}
+
+.field input:hover {
+  border-color: #45617F;
 }
 
 .field input:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 2px rgba(167, 131, 88, 0.15);
+  border-color: var(--blue-light);
+  box-shadow: 0 0 0 3px rgba(72, 169, 255, 0.18);
 }
 
-/* TWO-COLUMN GRID */
+.field input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* TWO-COLUMN FIELD GRID */
 
 .field-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 20px;
+  gap: 22px 18px;
 }
 
 .full-width {
@@ -173,160 +201,190 @@ body {
 
 .form-actions {
   display: flex;
-  align-items: stretch;
-  gap: 14px;
-  margin-top: 4px;
+  align-items: center;
+  gap: 12px;
+  margin-top: 5px;
 }
 
 .form-actions button {
-  min-height: 58px;
-  padding: 14px 24px;
-  border-radius: 10px;
-  font-size: 16px;
+  min-height: 44px;
+  padding: 0 24px;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 12px;
   font-weight: 700;
+  letter-spacing: 0.5px;
   cursor: pointer;
-  transition: background 0.2s ease,
-              border-color 0.2s ease;
+  transition: background 0.2s ease, border-color 0.2s ease;
 }
 
 #search-button {
-  flex: 1;
-  background: #262626;
-  border: 1px solid #353535;
+  background: var(--blue);
+  border: 1px solid var(--blue);
   color: #FFFFFF;
 }
 
 #search-button:hover {
-  background: #373737;
+  background: var(--blue-hover);
+  border-color: var(--blue-hover);
+}
+
+#search-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 #clear-button {
   background: transparent;
   border: 1px solid var(--border-light);
-  color: #FFFFFF;
+  color: var(--muted);
 }
 
 #clear-button:hover {
   background: var(--surface-hover);
+  border-color: var(--blue-light);
+  color: var(--text);
 }
 
 /* SEARCH RESULTS */
 
 .results-section {
-  margin-top: 32px;
-  padding: 25px 0;
-  border-top: 1px solid var(--border);
+  margin-top: 42px;
 }
 
 .results-heading {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   gap: 12px;
-  margin-bottom: 18px;
+  margin-bottom: 17px;
 }
 
 .results-heading h2 {
-  margin: 0;
-  font-size: 18px;
-  letter-spacing: 1px;
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
 }
 
 #result-count {
-  color: var(--muted);
-  font-size: 13px;
+  padding: 4px 10px;
+  background: #13243A;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  color: var(--blue-light);
+  font-size: 10px;
+  font-weight: 600;
 }
 
 .results-placeholder {
+  min-height: 120px;
   padding: 35px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface);
   border: 1px dashed var(--border-light);
-  border-radius: 10px;
+  border-radius: 8px;
   color: var(--muted);
+  font-size: 13px;
   text-align: center;
-  font-size: 14px;
 }
 
 /* FOOTER */
 
 .footer {
   display: flex;
-  flex-wrap: wrap;
+  align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
   gap: 12px;
-  padding: 24px 0;
-  margin-top: 25px;
+  margin-top: 65px;
+  padding-top: 20px;
   border-top: 1px solid var(--border);
-  color: #777777;
-  font-size: 12px;
+  color: #71849B;
+  font-size: 10px;
+  letter-spacing: 0.4px;
 }
 
-/* MOBILE RESPONSIVENESS */
+.footer span:first-child {
+  color: var(--blue-light);
+  font-weight: 700;
+  letter-spacing: 1.5px;
+}
+
+/* RESPONSIVE DESIGN */
 
 @media (max-width: 650px) {
-
   .topbar {
-    margin: 10px;
-    padding: 17px;
-    border-radius: 12px;
-  }
-
-  .brand-mark {
-    font-size: 21px;
-  }
-
-  .brand-name {
-    font-size: 12px;
-    letter-spacing: 2px;
-  }
-
-  .demo-badge {
-    padding: 8px 11px;
-    font-size: 11px;
+    min-height: 60px;
+    padding: 12px 5%;
   }
 
   .container {
-    padding: 20px 15px;
+    padding: 45px 18px 25px;
+  }
+
+  .page-heading {
+    margin-bottom: 25px;
+  }
+
+  .page-heading h1 {
+    font-size: 30px;
+  }
+
+  .page-heading p {
+    font-size: 10px;
+    letter-spacing: 2px;
+  }
+
+  .search-panel {
+    padding: 20px 16px;
+  }
+
+  .field-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .form-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .form-actions button {
+    width: 100%;
+  }
+
+  .results-section {
+    margin-top: 32px;
+  }
+
+  .footer {
+    flex-direction: column;
+    align-items: flex-start;
+    margin-top: 45px;
+  }
+}
+
+/* SMALL MOBILE SCREENS */
+
+@media (max-width: 380px) {
+  .brand-name {
+    font-size: 12px;
+    letter-spacing: 1.5px;
+  }
+
+  .demo-badge {
+    font-size: 9px;
+    padding: 4px 8px;
   }
 
   .page-heading h1 {
     font-size: 26px;
   }
 
-  .page-heading p {
-    font-size: 15px;
-    margin-top: 17px;
-  }
-
   .search-panel {
-    padding: 18px;
-  }
-
-  .field-grid {
-    grid-template-columns: 1fr;
-    gap: 18px;
-  }
-
-  .field input {
-    min-height: 52px;
-    font-size: 15px;
-  }
-
-  .form-actions {
-    gap: 9px;
-  }
-
-  .form-actions button {
-    min-height: 53px;
-    padding: 12px;
-    font-size: 14px;
-  }
-
-  .results-heading h2 {
-    font-size: 15px;
-  }
-
-  .footer {
-    flex-direction: column;
-    font-size: 11px;
+    padding: 16px 12px;
   }
 }
